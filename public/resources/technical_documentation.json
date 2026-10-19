@@ -1,0 +1,14 @@
+[
+  {
+    "category": "IFCWALL",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcWall.htm"
+  },
+  {
+    "category": "IFCWINDOW",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcWindow.htm"
+  },
+  {
+    "category": "IFCRAILING",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcRailing.htm"
+  }
+]

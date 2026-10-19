@@ -1,0 +1,3 @@
+# IFC and fragments files are used byte for byte: no line ending conversion
+*.ifc -text
+*.frag binary

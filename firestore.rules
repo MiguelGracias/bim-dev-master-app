@@ -1,0 +1,49 @@
+rules_version = '2';
+
+// The app has no login: anyone with the app can read and write, but only in the
+// collections the app uses and only with data that looks like the app's data.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function validProject(data) {
+      return data.name is string && data.name.size() >= 5 && data.name.size() <= 100
+        && (!("description" in data) || (data.description is string && data.description.size() <= 2000))
+        && data.status in ["brief", "preliminary-study", "licensing", "detailed-design", "tendering", "construction", "completed", "on-hold"]
+        && (!("todos" in data) || (data.todos is list && data.todos.size() <= 500));
+    }
+
+    function validToDo(data) {
+      return data.description is string && data.description.size() > 0 && data.description.size() <= 1000
+        && data.status in ["pending", "in-progress", "done"]
+        && (!("priority" in data) || data.priority in ["low", "medium", "high"]);
+    }
+
+    function validUser(data) {
+      return data.name is string && data.name.trim().size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.matches(".+@.+");
+    }
+
+    match /projects/{projectId} {
+      allow read, delete: if true;
+      allow create, update: if validProject(request.resource.data);
+
+      // ToDos of the project
+      match /todos/{todoId} {
+        allow read, delete: if true;
+        allow create, update: if validToDo(request.resource.data);
+      }
+
+      // Read by the DataEnhancer component
+      match /activities/{activityId} {
+        allow read: if true;
+      }
+    }
+
+    match /users/{userId} {
+      allow read, delete: if true;
+      allow create, update: if validUser(request.resource.data);
+    }
+
+    // Everything else is closed
+  }
+}
